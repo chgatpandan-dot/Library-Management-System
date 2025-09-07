@@ -1,162 +1,289 @@
-#include<iostream>
-#include<string>
+#include <iostream>
+#include <string>
 using namespace std;
 
-class Book{
-    private: 
+
+class Book {
+private:
     string title;
     string author;
     int ISBN;
     bool Available;
 
-    public:
-    Book(){
+public:
+    Book() {
         title = "";
         author = "";
         ISBN = 0;
         Available = true;
     }
-    void addBook(){
-        
-        cout<<"Enter Title: ";
+
+    void addBook() {
+        cout << "Enter Title: ";
         cin.ignore();
         getline(cin, title);
-        cout<<"Enter Author: ";
+        cout << "Enter Author: ";
         getline(cin, author);
-        cout<<"ISBN: ";
-        cin>>ISBN;
-        cout<<"Book Added!"<<endl;
-    }
-    void displayBook(){
-        cout<<"Title: "<<title<<endl;
-        cout<<"Author: "<<author<<endl;
-        cout<<"ISBN: "<<ISBN<<endl;
-        cout<<"Available: " <<(Available ? "Availbale" : "Not Available")<<endl;
+        cout << "Enter ISBN: ";
+        cin >> ISBN;
+        Available = true;
+        cout << "Book Added!" << endl;
     }
 
-    void removeBook(){
+    void displayBook() {
+        if (title == "" && author == "" && ISBN == 0) {
+            cout << "No Book Info!" << endl;
+            return;
+        }
+        cout << "Title: " << title << endl;
+        cout << "Author: " << author << endl;
+        cout << "ISBN: " << ISBN << endl;
+        cout << "Available: " << (Available ? "Available" : "Not Available") << endl;
+    }
+
+    void removeBook() {
         title = "";
         author = "";
         ISBN = 0;
         Available = false;
-        cout<<"Book has been Removed!\n";
-    } void returnBook(){
+        cout << "Book has been Removed!\n";
+    }
+
+    void returnBook() {
         Available = true;
-        cout<<"Book Returned!"<<endl;
-    } void borrowBook(){
-            if(Available){
-                Available=false;
-                cout<<"Enter Book You want to Borrow: ";
-                displayBook();
-                cout<<"Book Borrowed!"<<endl;
-            }  else{
-                    cout<<"Book has already been Borrowed!\n";
-                }
-        } 
+        cout << "Book Returned!" << endl;
+    }
+
+    void borrowBook() {
+        if (Available) {
+            Available = false;
+            cout << "You borrowed this book: " << endl;
+            displayBook();
+            cout << "Book Borrowed!" << endl;
+        } else {
+            cout << "Book has already been Borrowed!\n";
+        }
+    }
+
+    // Helpers for Library
+    int getISBN() { return ISBN; }
+    bool isAvailable() { return Available; }
 };
-    class LibraryUser{
-        private:
-        string name;
-        int userID;
 
-        public:
-        LibraryUser(){
-            name = "";
-            userID = 0;
-        } void registerUser(){
-            cout<<"Enter Name: ";
-            cin.ignore();
-            getline(cin, name);
-            cout<<"Enter User ID: ";
-            cin>>userID;
-            cout<<"User Registered!"<<endl;
-        } void removeUser(){
-            name ="";
-            userID = 0;
-            cout<<"User Removed!"<<endl;
-        }  void showUser(){
-            cout<<"Name: "<<name<<endl;
-            cout<<"User ID: "<<userID<<endl;
-            
-        }
-    
-    };
-       
-    class Library{
-        private: 
-        Book *books;
-        LibraryUser *user;
-        int bookCount;
-        int userCount;
 
-        public:
-        Library(){
-            books = new Book[100];
-            user = new LibraryUser[100];
-            bookCount = 0;
-            userCount = 0;
-        } void addUser(){
-            if(userCount<100){
-                user[userCount].registerUser();
-                userCount++;
-            }else{
-                cout<<"User Limit Reached!"<<endl;
-            }
-        } void addBook(){
-            if(bookCount<100){
-                books[bookCount].addBook();
-                bookCount++;
-            }
-        }
-        void displayUser(){
-           if(userCount == 0){
-                cout<<"No Users registered!\n"<<endl;
-            }for(int i=0; i<userCount; i++){
-                cout<<"User #"<<i+1<<endl;
-                user[i].showUser();
-                cout<<endl;
-            }
-        }
-    };
+class LibraryUser {
+private:
+    string name;
+    int userID;
 
-int main(){
-    Book buk;
+public:
+    LibraryUser() {
+        name = "";
+        userID = 0;
+    }
+
+    void registerUser() {
+        cout << "Enter Name: ";
+        cin.ignore();
+        getline(cin, name);
+        cout << "Enter User ID: ";
+        cin >> userID;
+        cout << "User Registered!" << endl;
+    }
+
+    void removeUser() {
+        name = "";
+        userID = 0;
+        cout << "User Removed!" << endl;
+    }
+
+    void showUser() {
+        if (name == "" && userID == 0) {
+            cout << "No User Info!" << endl;
+            return;
+        }
+        cout << "Name: " << name << endl;
+        cout << "User ID: " << userID << endl;
+    }
+
+    int getUserID() { return userID; }
+};
+
+
+class Library {
+private:
+    Book *books;
+    LibraryUser *users;
+    int bookCount;
+    int userCount;
+
+public:
+    Library() {
+        books = new Book[100];
+        users = new LibraryUser[100];
+        bookCount = 0;
+        userCount = 0;
+    }
+
+    void addUser() {
+        if (userCount < 100) {
+            users[userCount].registerUser();
+            userCount++;
+        } else {
+            cout << "User Limit Reached!" << endl;
+        }
+    }
+
+    void removeUser() {
+        int id;
+        cout << "Enter User ID to remove: ";
+        cin >> id;
+        bool found = false;
+
+        for (int i = 0; i < userCount; i++) {
+            if (users[i].getUserID() == id) {
+                users[i].removeUser();
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            cout << "User not found!" << endl;
+        }
+    }
+
+    void addBook() {
+        if (bookCount < 100) {
+            books[bookCount].addBook();
+            bookCount++;
+        } else {
+            cout << "Book Limit Reached!" << endl;
+        }
+    }
+
+    void removeBook() {
+        int isbn;
+        cout << "Enter ISBN to remove: ";
+        cin >> isbn;
+        bool found = false;
+
+        for (int i = 0; i < bookCount; i++) {
+            if (books[i].getISBN() == isbn) {
+                books[i].removeBook();
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            cout << "Book not found!" << endl;
+        }
+    }
+
+    void borrowBook() {
+        int isbn;
+        cout << "Enter ISBN to borrow: ";
+        cin >> isbn;
+        bool found = false;
+
+        for (int i = 0; i < bookCount; i++) {
+            if (books[i].getISBN() == isbn) {
+                books[i].borrowBook();
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            cout << "Book not found!" << endl;
+        }
+    }
+
+    void returnBook() {
+        int isbn;
+        cout << "Enter ISBN to return: ";
+        cin >> isbn;
+        bool found = false;
+
+        for (int i = 0; i < bookCount; i++) {
+            if (books[i].getISBN() == isbn) {
+                books[i].returnBook();
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            cout << "Book not found!" << endl;
+        }
+    }
+
+    void displayBooks() {
+        if (bookCount == 0) {
+            cout << "No Books Available!\n" << endl;
+        }
+        for (int i = 0; i < bookCount; i++) {
+            cout << "Book #" << i + 1 << endl;
+            books[i].displayBook();
+            cout << endl;
+        }
+    }
+
+    void displayUsers() {
+        if (userCount == 0) {
+            cout << "No Users Registered!\n" << endl;
+        }
+        for (int i = 0; i < userCount; i++) {
+            cout << "User #" << i + 1 << endl;
+            users[i].showUser();
+            cout << endl;
+        }
+    }
+};
+
+
+int main() {
     int choice;
-
-    while(true){
-    cout<<"-------Library Management System-------"<<endl;
-    cout<<"Add Book          (1)"<<endl;
-    cout<<"Remove Book       (2)"<<endl;
-    cout<<"Register User     (3)"<<endl;
-    cout<<"Remove User       (4)"<<endl;
-    cout<<"Borrow Book       (5)"<<endl;
-    cout<<"Return Book       (6)"<<endl;
-    cout<<"Display Book      (7)"<<endl;
-    cout<<"Display Users     (8)"<<endl;
-    cout<<"Exit              (9)"<<endl;
-    cout<<"Enter Choice: ";
-    cin>>choice;
-    LibraryUser user;
     Library lib;
-   if(choice ==1){
-    buk.addBook();
-   }else if(choice == 2){
-    buk.removeBook();
-   }else if(choice == 3){
-    user.registerUser();
-   }else if(choice == 4){
-    user.removeUser();
-   }else if(choice == 5){
-    buk.borrowBook();
-   }else if (choice == 6){
-    buk.returnBook();
-   }else if(choice == 7){
-    buk.displayBook();
-   }else if(choice == 8){
-    lib.displayUser();
-   }else{
-    cout<<"invalid Input please try again!"<<endl;
-   }
-}
-   return 0;
+
+    while (true) {
+        cout << "-------Library Management System-------" << endl;
+        cout << "Add Book          (1)" << endl;
+        cout << "Remove Book       (2)" << endl;
+        cout << "Register User     (3)" << endl;
+        cout << "Remove User       (4)" << endl;
+        cout << "Borrow Book       (5)" << endl;
+        cout << "Return Book       (6)" << endl;
+        cout << "Display Books     (7)" << endl;
+        cout << "Display Users     (8)" << endl;
+        cout << "Exit              (9)" << endl;
+        cout << "Enter Choice: ";
+        cin >> choice;
+
+        if (choice == 1) {
+            lib.addBook();
+        } else if (choice == 2) {
+            lib.removeBook();
+        } else if (choice == 3) {
+            lib.addUser();
+        } else if (choice == 4) {
+            lib.removeUser();
+        } else if (choice == 5) {
+            lib.borrowBook();
+        } else if (choice == 6) {
+            lib.returnBook();
+        } else if (choice == 7) {
+            lib.displayBooks();
+        } else if (choice == 8) {
+            lib.displayUsers();
+        } else if (choice == 9) {
+            cout << "Exiting program..." << endl;
+            break;
+        } else {
+            cout << "Invalid Input! Please try again." << endl;
+        }
+    }
+
+    return 0;
 }
