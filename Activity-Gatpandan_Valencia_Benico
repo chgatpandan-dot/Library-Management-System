@@ -120,8 +120,8 @@ class Book{
     };
 
 int main(){
-    Book buk;
     int choice;
+    Library lib;
 
     while(true){
     cout<<"-------Library Management System-------"<<endl;
@@ -136,22 +136,21 @@ int main(){
     cout<<"Exit              (9)"<<endl;
     cout<<"Enter Choice: ";
     cin>>choice;
-    LibraryUser user;
-    Library lib;
+
    if(choice ==1){
-    buk.addBook();
+    lib.addBook();
    }else if(choice == 2){
-    buk.removeBook();
+   cout <<"Remove book not implemented yet.\n";
    }else if(choice == 3){
-    user.registerUser();
+    lib.addUser();
    }else if(choice == 4){
-    user.removeUser();
+    cout << "Remove User not implemented yet.\n";
    }else if(choice == 5){
-    buk.borrowBook();
+    cout<<"Borrow book not implemented yet.\n";
    }else if (choice == 6){
-    buk.returnBook();
+    cout<< "Return Book not implemented yet.\n";
    }else if(choice == 7){
-    buk.displayBook();
+    cout << "Display Book not implemented yet.\n";
    }else if(choice == 8){
     lib.displayUser();
    }else{
